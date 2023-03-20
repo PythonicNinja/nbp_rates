@@ -19,8 +19,6 @@ def select_period_shell(last_months=12) -> Tuple[arrow.Arrow, arrow.Arrow]:
 
     start_date = arrow.get(selected_period).replace(day=1)
     end_date = start_date.shift(months=1, days=-1)
-    if end_date > arrow.now():
-        end_date = arrow.now()
     return start_date, end_date
 
 
@@ -61,6 +59,8 @@ def main():
         start_date, end_date = arrow.get(args.start), arrow.get(args.end)
     else:
         start_date, end_date = select_period_shell(last_months=args.select_period)
+    if end_date > arrow.now():
+        end_date = arrow.now()
 
     rates = fetch_rates_to_pln_nbp(
         start_date=start_date,
