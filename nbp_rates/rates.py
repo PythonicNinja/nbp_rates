@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+import arrow as arrow
 import requests
 import datetime
 import numpy as np
@@ -62,7 +63,7 @@ def predict_price_for_period_using_different_ml_models(
     lr.fit(X, y)
     svm.fit(X, y)
     dt.fit(X, y)
-    rf.fit(X, y)
+    rf.fit(X, y.ravel())
     return {
         "linear_regression": lr.predict(np.array([rates[-1]]).reshape(-1, 1))[0][0],
         "svm": svm.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
@@ -72,17 +73,22 @@ def predict_price_for_period_using_different_ml_models(
 
 
 if __name__ == '__main__':
-    start = datetime.datetime(2023, 1, 1)
-    end = datetime.datetime(2023, 3, 20)
+    last_days_predictions = (
+        365, 180, 90, 30, 14, 7, 3
+    )
 
-    moving_averages = predict_price_for_period(start_date=start, end_date=end)
-    prices = predict_price_for_period_using_different_ml_models(start_date=start, end_date=end)
+    for last_days in last_days_predictions:
+        end = arrow.now().datetime
+        start = end - datetime.timedelta(days=last_days)
 
-    for k, v in moving_averages.items():
-        print(f"{k}: {v}")
-    print()
-    for k, v in prices.items():
-        print(f"{k}: {v}")
+        moving_averages = predict_price_for_period(start_date=start, end_date=end)
+        prices = predict_price_for_period_using_different_ml_models(start_date=start, end_date=end)
 
-    avg_price = sum(prices.values()) / len(prices)
-    print(f"ML avg_price: {avg_price}")
+        # for k, v in moving_averages.items():
+        #     print(f"{k}: {v}")
+        # print()
+        # for k, v in prices.items():
+        #     print(f"{k}: {v}")
+
+        avg_price = sum(prices.values()) / len(prices)
+        print(f"ML avg_price: {avg_price}")
