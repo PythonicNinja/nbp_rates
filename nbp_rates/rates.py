@@ -43,36 +43,44 @@ def predict_price_for_period(start_date: datetime, end_date: datetime, currency=
     return {k: v for k, v in rates[-1].items() if k.startswith("avg_")}
 
 
-def predict_price_for_period_using_scikit_learn(start_date: datetime, end_date: datetime, currency="EUR") -> float:
-    import numpy as np
-    from sklearn.svm import SVR
-    rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
-    rates = [r['rate'] for r in rates]
-    svm = SVR(kernel='rbf', C=1e3, gamma=0.1)
-    X = np.array(rates).reshape(-1, 1)
-    y = np.array(rates).reshape(-1, 1)
-    svm.fit(X, y)
-    return svm.predict(np.array([rates[-1]]).reshape(-1, 1))[-1]
-
-
-def predict_price_for_period_using_linear_regression(start_date: datetime, end_date: datetime, currency="EUR") -> float:
+def predict_price_for_period_using_different_ml_models(start_date: datetime, end_date: datetime, currency="EUR") -> Dict[str, float]:
     import numpy as np
     from sklearn.linear_model import LinearRegression
+    from sklearn.svm import SVR
+    from sklearn.tree import DecisionTreeRegressor
+    from sklearn.ensemble import RandomForestRegressor
     rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
     rates = [r['rate'] for r in rates]
     lr = LinearRegression()
+    svm = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    dt = DecisionTreeRegressor()
+    rf = RandomForestRegressor()
     X = np.array(rates).reshape(-1, 1)
     y = np.array(rates).reshape(-1, 1)
     lr.fit(X, y)
-    return lr.predict(np.array([rates[-1]]).reshape(-1, 1))[-1]
+    svm.fit(X, y)
+    dt.fit(X, y)
+    rf.fit(X, y)
+    return {
+        "linear_regression": lr.predict(np.array([rates[-1]]).reshape(-1, 1))[0][0],
+        "svm": svm.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
+        "decision_tree": dt.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
+        "random_forest": rf.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
+    }
 
 
 if __name__ == '__main__':
-    moving_averages = predict_price_for_period(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
-    print(moving_averages)
+    start = datetime.datetime(2023, 1, 1)
+    end = datetime.datetime(2023, 3, 20)
 
-    price = predict_price_for_period_using_scikit_learn(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
-    print(price)
+    moving_averages = predict_price_for_period(start_date=start, end_date=end)
+    prices = predict_price_for_period_using_different_ml_models(start_date=start, end_date=end)
 
-    price = predict_price_for_period_using_linear_regression(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
-    print(price)
+    for k, v in moving_averages.items():
+        print(f"{k}: {v}")
+    print()
+    for k, v in prices.items():
+        print(f"{k}: {v}")
+
+    avg_price = sum(prices.values()) / len(prices)
+    print(f"ML avg_price: {avg_price}")
