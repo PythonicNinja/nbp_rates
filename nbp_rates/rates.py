@@ -2,6 +2,11 @@ from typing import Dict, List
 
 import requests
 import datetime
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 
 def fetch_rates_to_pln_nbp(start_date: datetime, end_date: datetime, currency="EUR") -> List[Dict]:
@@ -26,7 +31,7 @@ def moving_avg(rates: List[Dict], n=3):
     for i in range(len(rates)):
         if i < n:
             continue
-        avg = sum(r['rate'] for r in rates[i-n:i]) / n
+        avg = sum(r['rate'] for r in rates[i - n:i]) / n
         rates[i][f"avg_{n}"] = avg
     return rates
 
@@ -43,12 +48,9 @@ def predict_price_for_period(start_date: datetime, end_date: datetime, currency=
     return {k: v for k, v in rates[-1].items() if k.startswith("avg_")}
 
 
-def predict_price_for_period_using_different_ml_models(start_date: datetime, end_date: datetime, currency="EUR") -> Dict[str, float]:
-    import numpy as np
-    from sklearn.linear_model import LinearRegression
-    from sklearn.svm import SVR
-    from sklearn.tree import DecisionTreeRegressor
-    from sklearn.ensemble import RandomForestRegressor
+def predict_price_for_period_using_different_ml_models(
+        start_date: datetime, end_date: datetime, currency="EUR"
+) -> dict:
     rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
     rates = [r['rate'] for r in rates]
     lr = LinearRegression()
