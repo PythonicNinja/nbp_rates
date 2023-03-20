@@ -55,8 +55,8 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.start and args.end:
-        start_date, end_date = arrow.get(args.start), arrow.get(args.end)
+    if args.start:
+        start_date, end_date = arrow.get(args.start), arrow.get(args.end or arrow.now())
     else:
         start_date, end_date = select_period_shell(last_months=args.select_period)
     if end_date > arrow.now():
