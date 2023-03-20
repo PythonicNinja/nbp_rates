@@ -11,4 +11,9 @@ def fetch_rates_to_pln_nbp(start_date: datetime, end_date: datetime, currency="E
     req = requests.get(url)
     rates = req.json()["rates"]
     rates = [{'date': r['effectiveDate'], 'rate': r['mid']} for r in rates]
+    min_rate = min(r['rate'] for r in rates)
+    max_rate = max(r['rate'] for r in rates)
+    for r in rates:
+        r['is_min'] = r['rate'] == min_rate
+        r['is_max'] = r['rate'] == max_rate
     return rates

@@ -67,7 +67,13 @@ def main():
         end_date=end_date,
         currency=args.currency,
     )
-    print(f"rates {rates}")
+    for r in rates:
+        if r['is_min']:
+            print(f"{r['date']}\t{r['rate']}\t<--MIN")
+        elif r['is_max']:
+            print(f"{r['date']}\t{r['rate']}\t<--MAX")
+        else:
+            print(f"{r['date']}\t{r['rate']}")
 
 
 if __name__ == '__main__':
