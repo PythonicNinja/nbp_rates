@@ -43,6 +43,36 @@ def predict_price_for_period(start_date: datetime, end_date: datetime, currency=
     return {k: v for k, v in rates[-1].items() if k.startswith("avg_")}
 
 
+def predict_price_for_period_using_scikit_learn(start_date: datetime, end_date: datetime, currency="EUR") -> float:
+    import numpy as np
+    from sklearn.svm import SVR
+    rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
+    rates = [r['rate'] for r in rates]
+    svm = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    X = np.array(rates).reshape(-1, 1)
+    y = np.array(rates).reshape(-1, 1)
+    svm.fit(X, y)
+    return svm.predict(np.array([rates[-1]]).reshape(-1, 1))[-1]
+
+
+def predict_price_for_period_using_linear_regression(start_date: datetime, end_date: datetime, currency="EUR") -> float:
+    import numpy as np
+    from sklearn.linear_model import LinearRegression
+    rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
+    rates = [r['rate'] for r in rates]
+    lr = LinearRegression()
+    X = np.array(rates).reshape(-1, 1)
+    y = np.array(rates).reshape(-1, 1)
+    lr.fit(X, y)
+    return lr.predict(np.array([rates[-1]]).reshape(-1, 1))[-1]
+
+
 if __name__ == '__main__':
     moving_averages = predict_price_for_period(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
     print(moving_averages)
+
+    price = predict_price_for_period_using_scikit_learn(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
+    print(price)
+
+    price = predict_price_for_period_using_linear_regression(datetime.datetime(2022, 3, 20), datetime.datetime(2023, 3, 20))
+    print(price)
