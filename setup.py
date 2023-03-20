@@ -9,12 +9,6 @@ simple_term_menu
 
 setup(
     name="nbp_rates",
-    setup_requires=["setuptools_scm"],
-    use_scm_version={
-        "write_to": "../version.txt",
-        "root": "..",
-        "relative_to": __file__,
-    },
     author="Wojciech Nowak",
     author_email="mail@pythonic.ninja",
     description="{description}",
