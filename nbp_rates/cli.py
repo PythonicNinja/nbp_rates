@@ -4,7 +4,7 @@ from typing import Tuple
 import arrow
 from simple_term_menu import TerminalMenu
 
-from nbp_rates.rates import fetch_eur_pln_nbp
+from nbp_rates.rates import fetch_rates_to_pln_nbp
 
 
 def select_period_shell(last_months=12) -> Tuple[arrow.Arrow, arrow.Arrow]:
@@ -62,7 +62,7 @@ def main():
     else:
         start_date, end_date = select_period_shell(last_months=args.select_period)
 
-    rates = fetch_eur_pln_nbp(
+    rates = fetch_rates_to_pln_nbp(
         start_date=start_date,
         end_date=end_date,
         currency=args.currency,
