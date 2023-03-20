@@ -24,7 +24,7 @@ def select_period_shell(last_months=12) -> Tuple[arrow.Arrow, arrow.Arrow]:
     return start_date, end_date
 
 
-def cli():
+def main():
     parser = argparse.ArgumentParser(
         description="Generate work log based on gitlab actions annotated with issue link."
     )
@@ -71,4 +71,4 @@ def cli():
 
 
 if __name__ == '__main__':
-    cli()
+    main()
