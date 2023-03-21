@@ -1,6 +1,16 @@
 # nbp_rates
 Utility for getting exchange rates from NBP (Polish National Bank)
 
+## Installation
+
+```bash
+git clone git@github.com:PythonicNinja/nbp_rates.git
+cd nbp_rates
+pip install -e .
+```
+
+After that you will have `nbp_rates` command available in your shell.
+
 ## Fetcher
 
 Fetcher is a default mode of this utility. It fetches exchange rates from NBP and prints them to stdout.
