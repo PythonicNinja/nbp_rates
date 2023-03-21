@@ -4,6 +4,16 @@ import requests
 import datetime
 
 
+def fetch_latest_rates_forex(currency="EUR") -> dict:
+    url = f"https://user.walutomat.pl/api/public/marketBrief/{currency.upper()}_PLN"
+    req = requests.get(url)
+    try:
+        rates = req.json()["bestOffers"]
+    except requests.exceptions.JSONDecodeError:
+        raise ValueError(f"Walutomat returned invalid JSON: {req.text}")
+    return rates
+
+
 def fetch_rates_to_pln_nbp(start_date: datetime, end_date: datetime, currency="EUR") -> List[Dict]:
     start_str = start_date.strftime("%Y-%m-%d")
     end_str = end_date.strftime("%Y-%m-%d")

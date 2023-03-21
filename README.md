@@ -57,6 +57,21 @@ Fetcher is a default mode of this utility. It fetches exchange rates from NBP an
 2023-03-20	4.7109	<--MAX
 ```
 
+With `--now` you can fetch current exchange rate.
+
+```python
+| => nbp_rates --currency eur --now
+bid_now		4.7005
+ask_now		4.7074
+forex_now		4.707
+bid_old		4.7003
+ask_old		4.7074
+forex_old		4.707
+ask_trend		neutral
+bid_trend		up
+forex_trend		neutral
+```
+
 ## Predictor
 
 With option of `--predict` you can predict exchange rate for next day.

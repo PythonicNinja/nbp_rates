@@ -38,6 +38,12 @@ def main():
         help="currency to PLN",
     )
     parser.add_argument(
+        "--now",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="fetch latest rate",
+    )
+    parser.add_argument(
         "--start",
         default=None,
         help="start period example: 2022-07-01",
@@ -70,6 +76,13 @@ def main():
             model=args.predict,
         )
         print(rates)
+        return
+
+    if args.now:
+        from nbp_rates.rates import fetch_latest_rates_forex
+        rates = fetch_latest_rates_forex(currency=args.currency)
+        for k, v in rates.items():
+            print(f"{k}\t\t{v}")
         return
 
     rates = fetch_rates_to_pln_nbp(
