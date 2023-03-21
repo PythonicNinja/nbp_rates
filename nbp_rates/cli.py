@@ -48,10 +48,9 @@ def main():
         help="end period example: 2022-07-31",
     )
     parser.add_argument(
-        "--cache",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="If cache should be used for past dates",
+        "--predict",
+        default=None,
+        help="pass model example: ML, moving_average",
     )
     args = parser.parse_args()
 
@@ -61,6 +60,17 @@ def main():
         start_date, end_date = select_period_shell(last_months=args.select_period)
     if end_date > arrow.now():
         end_date = arrow.now()
+
+    if args.predict:
+        from nbp_rates.predict import predict
+        rates = predict(
+            start_date=start_date,
+            end_date=end_date,
+            currency=args.currency,
+            model=args.predict,
+        )
+        print(rates)
+        return
 
     rates = fetch_rates_to_pln_nbp(
         start_date=start_date,
