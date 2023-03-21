@@ -49,9 +49,20 @@ Fetcher is a default mode of this utility. It fetches exchange rates from NBP an
 
 ## Predictor
 
-With option of `--predict` you can predict exchange rate for next day. You can choose between `ml` and `moving_average` model. `ml` model uses machine learning algorithms to predict exchange rate. `moving_average` method uses simple arithmetic mean of exchange rates. 
+With option of `--predict` you can predict exchange rate for next day.
+You can choose between `ml` and `moving_average` model.
+
+`--predict ml` model uses machine learning algorithms to predict exchange rate. 
 
 ```python
 | => nbp_rates --predict ml
 {'linear_regression': 4.7109, 'svm': 4.69295, 'decision_tree': 4.7109, 'random_forest': 4.709264999999995, 'avg': 4.706003749999998}
+```
+
+`--predict moving_average` model uses simple arithmetic mean of exchange rates.
+It will try to fit 3, 7, 14, 30, 90, 180, 300 days moving averages to given period.
+
+```python
+nbp_rates --currency eur --start=2022-12-01 --end=2023-03-31 --predict moving_average
+{'avg_3': 4.701833333333333, 'avg_7': 4.692657142857143, 'avg_14': 4.695278571428572, 'avg_30': 4.72594}
 ```
