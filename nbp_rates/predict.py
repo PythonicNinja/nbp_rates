@@ -47,11 +47,19 @@ def predict_price_for_period_using_different_ml_models(
     svm.fit(X, y)
     dt.fit(X, y)
     rf.fit(X, y.ravel())
+
+    current = np.array(rates).reshape(-1, 1)
+
+    linear_regression = lr.predict(current)
+    svm_prediction = svm.predict(current)
+    decision_tree = dt.predict(current)
+    random_forest = rf.predict(current)
+
     predictions = {
-        "linear_regression": lr.predict(np.array([rates[-1]]).reshape(-1, 1))[0][0],
-        "svm": svm.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
-        "decision_tree": dt.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
-        "random_forest": rf.predict(np.array([rates[-1]]).reshape(-1, 1))[-1],
+        "linear_regression": linear_regression[-1][0],
+        "svm": svm_prediction[-1],
+        "decision_tree": decision_tree[-1],
+        "random_forest": random_forest[-1],
     }
     predictions["avg"] = sum(predictions.values()) / len(predictions)
     return predictions
