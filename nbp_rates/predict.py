@@ -44,9 +44,9 @@ def predict_price_for_period_using_different_ml_models(
     X = np.array(rates).reshape(-1, 1)
     y = np.array(rates).reshape(-1, 1)
     lr.fit(X, y)
-    svm.fit(X, y)
+    svm.fit(X, y.squeeze())
     dt.fit(X, y)
-    rf.fit(X, y.ravel())
+    rf.fit(X, y.squeeze())
 
     current = np.array(rates).reshape(-1, 1)
 
