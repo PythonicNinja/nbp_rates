@@ -1,6 +1,10 @@
 # nbp_rates
 Utility for getting exchange rates from NBP (Polish National Bank)
 
+## Fetcher
+
+Fetcher is a default mode of this utility. It fetches exchange rates from NBP and prints them to stdout.
+
 ```python
 | => nbp_rates --currency eur --select-period 12
 2023-02-01	4.708
@@ -41,4 +45,13 @@ Utility for getting exchange rates from NBP (Polish National Bank)
 2023-03-16	4.6978
 2023-03-17	4.7062
 2023-03-20	4.7109	<--MAX
+```
+
+## Predictor
+
+With option of `--predict` you can predict exchange rate for next day. You can choose between `ml` and `moving_average` model. `ml` model uses machine learning algorithms to predict exchange rate. `moving_average` method uses simple arithmetic mean of exchange rates. 
+
+```python
+| => nbp_rates --predict ml
+{'linear_regression': 4.7109, 'svm': 4.69295, 'decision_tree': 4.7109, 'random_forest': 4.709264999999995, 'avg': 4.706003749999998}
 ```
