@@ -85,8 +85,8 @@ def main():
         return
 
     if args.graph:
-        from nbp_rates.graph import show_graph
-        show_graph(
+        from nbp_rates.graph import show_rates_to_pln_graph
+        show_rates_to_pln_graph(
             start_date=start_date,
             end_date=end_date,
             currency=args.currency,
