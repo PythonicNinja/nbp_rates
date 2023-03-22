@@ -6,7 +6,6 @@ click
 requests
 simple_term_menu
 pandas
-numpy
 matplotlib
 """
 
