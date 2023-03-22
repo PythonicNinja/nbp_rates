@@ -58,6 +58,12 @@ def main():
         default=None,
         help="pass model example: ML, moving_average",
     )
+    parser.add_argument(
+        "--graph",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="show graph",
+    )
     args = parser.parse_args()
 
     if args.start:
@@ -76,6 +82,15 @@ def main():
             model=args.predict,
         )
         print(rates)
+        return
+
+    if args.graph:
+        from nbp_rates.graph import show_graph
+        show_graph(
+            start_date=start_date,
+            end_date=end_date,
+            currency=args.currency,
+        )
         return
 
     if args.now:
