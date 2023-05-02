@@ -1,7 +1,13 @@
+from enum import Enum
 from typing import Dict, List
 
 import requests
 import datetime
+
+
+class Backends(Enum):
+    REVOLUT = "revolut"
+    WALUTOMAT = "walutomat"
 
 
 def fetch_latest_rates_walutomat(currency="EUR") -> dict:
@@ -24,13 +30,30 @@ def fetch_latest_rates_revolut(currency="EUR") -> dict:
     return rates
 
 
-def fetch_current_rates(currency="EUR", backend="revolut") -> dict:
-    if backend == "revolut":
+def fetch_current_rates(currency="EUR", backend: Backends = Backends.REVOLUT.value) -> dict:
+    if backend == Backends.REVOLUT.value:
         return fetch_latest_rates_revolut(currency)
-    elif backend == "walutomat":
+    elif backend == Backends.WALUTOMAT.value:
         return fetch_latest_rates_walutomat(currency)
     else:
         raise ValueError(f"Unknown backend: {backend}")
+
+
+def fetch_best_exchange_rates(currency="EUR") -> dict:
+    rates = {}
+    for backend in Backends:
+        try:
+            rate = fetch_current_rates(currency, backend.value)
+            rate['rate'] = rate.get('rate') or rate.get('bid_now')
+            rates[backend.value] = rate
+        except ValueError:
+            continue
+    min_rate = min(rates.values(), key=lambda x: x['rate'])
+    max_rate = max(rates.values(), key=lambda x: x['rate'])
+    for backend, r in rates.items():
+        r['is_min'] = r['rate'] == min_rate['rate']
+        r['is_max'] = r['rate'] == max_rate['rate']
+    return rates
 
 
 def fetch_rates_to_pln_nbp(start_date: datetime, end_date: datetime, currency="EUR") -> List[Dict]:

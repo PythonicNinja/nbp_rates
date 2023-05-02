@@ -44,6 +44,12 @@ def main():
         help="fetch latest rate",
     )
     parser.add_argument(
+        "--best-exchange",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="fetch best exchange rate",
+    )
+    parser.add_argument(
         "--backend",
         default="revolut",
         help="backend to fetch rates example: nbp, walutomat, revolut",
@@ -103,6 +109,18 @@ def main():
         rates = fetch_current_rates(currency=args.currency, backend=args.backend)
         for k, v in rates.items():
             print(f"{k}\t\t{v}")
+        return
+
+    if args.best_exchange:
+        from nbp_rates.rates import fetch_best_exchange_rates
+        rates = fetch_best_exchange_rates()
+        for backend, rates in rates.items():
+            if rates['is_min']:
+                print(f"{backend}\t\t{rates['rate']}\t<--MIN")
+            elif rates['is_max']:
+                print(f"{backend}\t\t{rates['rate']}\t<--MAX")
+            else:
+                print(f"{backend}\t\t{rates['rate']}")
         return
 
     rates = fetch_rates_to_pln_nbp(
