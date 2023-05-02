@@ -44,6 +44,11 @@ def main():
         help="fetch latest rate",
     )
     parser.add_argument(
+        "--backend",
+        default="revolut",
+        help="backend to fetch rates example: nbp, walutomat, revolut",
+    )
+    parser.add_argument(
         "--start",
         default=None,
         help="start period example: 2022-07-01",
@@ -94,8 +99,8 @@ def main():
         return
 
     if args.now:
-        from nbp_rates.rates import fetch_latest_rates_forex
-        rates = fetch_latest_rates_forex(currency=args.currency)
+        from nbp_rates.rates import fetch_current_rates
+        rates = fetch_current_rates(currency=args.currency, backend=args.backend)
         for k, v in rates.items():
             print(f"{k}\t\t{v}")
         return

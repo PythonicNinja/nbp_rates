@@ -4,7 +4,7 @@ import requests
 import datetime
 
 
-def fetch_latest_rates_forex(currency="EUR") -> dict:
+def fetch_latest_rates_walutomat(currency="EUR") -> dict:
     url = f"https://user.walutomat.pl/api/public/marketBrief/{currency.upper()}_PLN"
     req = requests.get(url)
     try:
@@ -12,6 +12,25 @@ def fetch_latest_rates_forex(currency="EUR") -> dict:
     except requests.exceptions.JSONDecodeError:
         raise ValueError(f"Walutomat returned invalid JSON: {req.text}")
     return rates
+
+
+def fetch_latest_rates_revolut(currency="EUR") -> dict:
+    url = f"https://www.revolut.com/api/exchange/quote?amount=1000&country=US&fromCurrency={currency.upper()}&isRecipientAmount=false&toCurrency=PLN"
+    req = requests.get(url, headers={"accept-language": "en-US,en;q=0.9,pl;q=0.8"})
+    try:
+        rates = req.json()['rate']
+    except requests.exceptions.JSONDecodeError:
+        raise ValueError(f"Revolut returned invalid JSON: {req.text}")
+    return rates
+
+
+def fetch_current_rates(currency="EUR", backend="revolut") -> dict:
+    if backend == "revolut":
+        return fetch_latest_rates_revolut(currency)
+    elif backend == "walutomat":
+        return fetch_latest_rates_walutomat(currency)
+    else:
+        raise ValueError(f"Unknown backend: {backend}")
 
 
 def fetch_rates_to_pln_nbp(start_date: datetime, end_date: datetime, currency="EUR") -> List[Dict]:
