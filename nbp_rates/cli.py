@@ -114,13 +114,15 @@ def main():
     if args.best_exchange:
         from nbp_rates.rates import fetch_best_exchange_rates
         rates = fetch_best_exchange_rates()
-        for backend, rates in rates.items():
-            if rates['is_min']:
-                print(f"{backend}\t\t{rates['rate']}\t<--MIN")
-            elif rates['is_max']:
-                print(f"{backend}\t\t{rates['rate']}\t<--MAX")
+        for backend, r in rates.items():
+            if r['is_max']:
+                print(f"{backend}\t\t{r['rate']}\t<--MAX")
             else:
-                print(f"{backend}\t\t{rates['rate']}")
+                print(f"{backend}\t\t{r['rate']}")
+        max_rate = max([r['rate'] for r in rates.values()])
+        min_rate = min([r['rate'] for r in rates.values()])
+        diff_max_min = max_rate - min_rate
+        print(f"Diff 100 000 EUR -> PLN: {diff_max_min * 100000:.2f} PLN")
         return
 
     rates = fetch_rates_to_pln_nbp(

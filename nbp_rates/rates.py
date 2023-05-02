@@ -11,10 +11,10 @@ class Backends(Enum):
 
 
 def fetch_latest_rates_walutomat(currency="EUR") -> dict:
-    url = f"https://user.walutomat.pl/api/public/marketBrief/{currency.upper()}_PLN"
+    url = f"https://user.walutomat.pl/api/public/marketEstimate/sell/10000/{currency.upper()}/PLN"
     req = requests.get(url)
     try:
-        rates = req.json()["bestOffers"]
+        rates = req.json()["exchange_offers"][0]
     except requests.exceptions.JSONDecodeError:
         raise ValueError(f"Walutomat returned invalid JSON: {req.text}")
     return rates
@@ -44,7 +44,10 @@ def fetch_best_exchange_rates(currency="EUR") -> dict:
     for backend in Backends:
         try:
             rate = fetch_current_rates(currency, backend.value)
-            rate['rate'] = rate.get('rate') or rate.get('bid_now')
+            if backend == Backends.WALUTOMAT:
+                rate['rate'] = float(rate.get("display_amount", "0").replace(",", ".")) / 10000
+            else:
+                rate['rate'] = float(rate.get('rate') or rate.get('bid_now'))
             rates[backend.value] = rate
         except ValueError:
             continue
