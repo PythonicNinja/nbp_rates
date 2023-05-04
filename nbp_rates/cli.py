@@ -122,12 +122,8 @@ def main():
         max_rate = max([r['rate'] for r in rates.values()])
         min_rate = min([r['rate'] for r in rates.values()])
         diff_max_min = max_rate - min_rate
-        print(f"Diff 10 000 {args.currency.upper()} -> PLN: {diff_max_min * 10000:.2f} PLN")
-        print(f"Diff 20 000 {args.currency.upper()} -> PLN: {diff_max_min * 20000:.2f} PLN")
-        print(f"Diff 50 000 {args.currency.upper()} -> PLN: {diff_max_min * 50000:.2f} PLN")
-        print(f"Diff 100 000 {args.currency.upper()} -> PLN: {diff_max_min * 100000:.2f} PLN")
-        print(f"Diff 200 000 {args.currency.upper()} -> PLN: {diff_max_min * 200000:.2f} PLN")
-        print(f"Diff 300 000 {args.currency.upper()} -> PLN: {diff_max_min * 300000:.2f} PLN")
+        for source in [10000, 20000, 50000, 100000, 200000, 300000]:
+            print(f"Diff {source} {args.currency.upper()} -> PLN: {diff_max_min * source:.2f} PLN")
         return
 
     rates = fetch_rates_to_pln_nbp(
