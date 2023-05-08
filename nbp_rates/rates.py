@@ -51,11 +51,12 @@ def fetch_best_exchange_rates(currency="EUR") -> dict:
             rates[backend.value] = rate
         except ValueError:
             continue
-    min_rate = min(rates.values(), key=lambda x: x['rate'])
-    max_rate = max(rates.values(), key=lambda x: x['rate'])
-    for backend, r in rates.items():
-        r['is_min'] = r['rate'] == min_rate['rate']
-        r['is_max'] = r['rate'] == max_rate['rate']
+    rate_values = [r['rate'] for r in rates.values()]
+    min_rate = min(rate_values)
+    max_rate = max(rate_values)
+    for _, r in rates.items():
+        r['is_min'] = r['rate'] == min_rate
+        r['is_max'] = r['rate'] == max_rate
     return rates
 
 
