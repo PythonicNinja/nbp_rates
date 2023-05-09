@@ -127,7 +127,7 @@ def main():
         for amount in [10000, 20000, 50000, 100000, 200000, 300000]:
             amount_str = format(amount, ",d").replace(",", " ")
             print(
-                f"Diff {amount_str} {args.currency.upper()} -> PLN: {diff_max_min * amount:.2f} PLN"
+                f"Diff\t{amount_str} {args.currency.upper()}\t->\tPLN: {diff_max_min * amount:.2f} PLN"
             )
         return
 
