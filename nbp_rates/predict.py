@@ -15,7 +15,7 @@ def moving_avg(rates: List[Dict], n=3):
     for i in range(len(rates)):
         if i < n:
             continue
-        avg = sum(r['rate'] for r in rates[i - n:i]) / n
+        avg = sum(r["rate"] for r in rates[i - n : i]) / n
         rates[i][f"avg_{n}"] = avg
     return rates
 
@@ -33,12 +33,12 @@ def predict_price_for_period(start_date: datetime, end_date: datetime, currency=
 
 
 def predict_price_for_period_using_different_ml_models(
-        start_date: datetime, end_date: datetime, currency="EUR"
+    start_date: datetime, end_date: datetime, currency="EUR"
 ) -> dict:
     rates = fetch_rates_to_pln_nbp(start_date, end_date, currency)
-    rates = [r['rate'] for r in rates]
+    rates = [r["rate"] for r in rates]
     lr = LinearRegression()
-    svm = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    svm = SVR(kernel="rbf", C=1e3, gamma=0.1)
     dt = DecisionTreeRegressor()
     rf = RandomForestRegressor()
     X = np.array(rates).reshape(-1, 1)
@@ -66,25 +66,30 @@ def predict_price_for_period_using_different_ml_models(
 
 
 def predict(
-    start_date: datetime, end_date: datetime, currency="EUR", model: str = "moving_average"
+    start_date: datetime,
+    end_date: datetime,
+    currency="EUR",
+    model: str = "moving_average",
 ):
     model = model.lower()
     if model == "moving_average":
         return predict_price_for_period(start_date, end_date, currency)
     elif model == "ml":
-        return predict_price_for_period_using_different_ml_models(start_date, end_date, currency)
+        return predict_price_for_period_using_different_ml_models(
+            start_date, end_date, currency
+        )
     else:
         raise ValueError(f"Unknown model: {model}")
 
 
-if __name__ == '__main__':
-    last_days_predictions = (
-        365, 180, 90, 30, 14, 7, 3
-    )
+if __name__ == "__main__":
+    last_days_predictions = (365, 180, 90, 30, 14, 7, 3)
 
     for last_days in last_days_predictions:
         end = arrow.now().datetime
         start = end - datetime.timedelta(days=last_days)
 
         moving_averages = predict_price_for_period(start_date=start, end_date=end)
-        prices = predict_price_for_period_using_different_ml_models(start_date=start, end_date=end)
+        prices = predict_price_for_period_using_different_ml_models(
+            start_date=start, end_date=end
+        )
