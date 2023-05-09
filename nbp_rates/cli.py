@@ -4,13 +4,13 @@ from typing import Tuple
 import arrow
 from simple_term_menu import TerminalMenu
 
-from nbp_rates.rates import (
-    fetch_rates_to_pln_nbp,
-    fetch_current_rates,
-    fetch_best_exchange_rates,
-)
-from nbp_rates.predict import predict
 from nbp_rates.graph import show_rates_to_pln_graph
+from nbp_rates.predict import predict
+from nbp_rates.rates import (
+    fetch_best_exchange_rates,
+    fetch_current_rates,
+    fetch_rates_to_pln_nbp,
+)
 
 
 def select_period_shell(last_months=12) -> Tuple[arrow.Arrow, arrow.Arrow]:
