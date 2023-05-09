@@ -4,7 +4,13 @@ from typing import Tuple
 import arrow
 from simple_term_menu import TerminalMenu
 
-from nbp_rates.rates import fetch_rates_to_pln_nbp
+from nbp_rates.rates import (
+    fetch_rates_to_pln_nbp,
+    fetch_current_rates,
+    fetch_best_exchange_rates,
+)
+from nbp_rates.predict import predict
+from nbp_rates.graph import show_rates_to_pln_graph
 
 
 def select_period_shell(last_months=12) -> Tuple[arrow.Arrow, arrow.Arrow]:
@@ -85,7 +91,6 @@ def main():
         end_date = arrow.now()
 
     if args.predict:
-        from nbp_rates.predict import predict
         rates = predict(
             start_date=start_date,
             end_date=end_date,
@@ -96,7 +101,6 @@ def main():
         return
 
     if args.graph:
-        from nbp_rates.graph import show_rates_to_pln_graph
         show_rates_to_pln_graph(
             start_date=start_date,
             end_date=end_date,
@@ -105,25 +109,25 @@ def main():
         return
 
     if args.now:
-        from nbp_rates.rates import fetch_current_rates
         rates = fetch_current_rates(currency=args.currency, backend=args.backend)
         for k, v in rates.items():
             print(f"{k}\t\t{v}")
         return
 
     if args.best_exchange:
-        from nbp_rates.rates import fetch_best_exchange_rates
         rates = fetch_best_exchange_rates(currency=args.currency)
         for backend, r in rates.items():
-            if r['is_max']:
+            if r["is_max"]:
                 print(f"{backend}\t\t{r['rate']}\t<--MAX")
             else:
                 print(f"{backend}\t\t{r['rate']}")
-        max_rate = max([r['rate'] for r in rates.values()])
-        min_rate = min([r['rate'] for r in rates.values()])
+        max_rate = max([r["rate"] for r in rates.values()])
+        min_rate = min([r["rate"] for r in rates.values()])
         diff_max_min = max_rate - min_rate
         for source in [10000, 20000, 50000, 100000, 200000, 300000]:
-            print(f"Diff {source} {args.currency.upper()} -> PLN: {diff_max_min * source:.2f} PLN")
+            print(
+                f"Diff {source} {args.currency.upper()} -> PLN: {diff_max_min * source:.2f} PLN"
+            )
         return
 
     rates = fetch_rates_to_pln_nbp(
@@ -132,13 +136,13 @@ def main():
         currency=args.currency,
     )
     for r in rates:
-        if r['is_min']:
+        if r["is_min"]:
             print(f"{r['date']}\t{r['rate']}\t<--MIN")
-        elif r['is_max']:
+        elif r["is_max"]:
             print(f"{r['date']}\t{r['rate']}\t<--MAX")
         else:
             print(f"{r['date']}\t{r['rate']}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
