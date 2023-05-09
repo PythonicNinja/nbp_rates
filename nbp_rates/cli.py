@@ -118,12 +118,14 @@ def main():
         rates = fetch_best_exchange_rates(currency=args.currency)
         for backend, r in rates.items():
             if r["is_max"]:
-                print(f"{backend}\t\t{r['rate']}\t<--MAX")
+                print(f"{backend.ljust(10)}\t\t{r['rate']:.4f}\t<-- Best offer")
             else:
-                print(f"{backend}\t\t{r['rate']}")
+                print(f"{backend.ljust(10)}\t\t{r['rate']:.4f}")
         max_rate = max([r["rate"] for r in rates.values()])
         min_rate = min([r["rate"] for r in rates.values()])
         diff_max_min = max_rate - min_rate
+        diff_percentage = diff_max_min / max_rate * 100
+        print(f"% Diff\t\t\t{diff_percentage:.2f}%")
         for amount in [10000, 20000, 50000, 100000, 200000, 300000]:
             amount_str = format(amount, ",d").replace(",", " ")
             print(
