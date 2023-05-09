@@ -7,6 +7,7 @@ requests
 simple_term_menu
 pandas
 matplotlib
+scikit-learn
 """
 
 setup(
