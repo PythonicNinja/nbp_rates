@@ -124,9 +124,10 @@ def main():
         max_rate = max([r["rate"] for r in rates.values()])
         min_rate = min([r["rate"] for r in rates.values()])
         diff_max_min = max_rate - min_rate
-        for source in [10000, 20000, 50000, 100000, 200000, 300000]:
+        for amount in [10000, 20000, 50000, 100000, 200000, 300000]:
+            amount_str = format(amount, ",d").replace(",", " ")
             print(
-                f"Diff {source} {args.currency.upper()} -> PLN: {diff_max_min * source:.2f} PLN"
+                f"Diff {amount_str} {args.currency.upper()} -> PLN: {diff_max_min * amount:.2f} PLN"
             )
         return
 
