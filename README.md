@@ -1,4 +1,7 @@
 # nbp_rates
+
+[![Python package](https://github.com/PythonicNinja/nbp_rates/actions/workflows/python-package.yml/badge.svg)](https://github.com/PythonicNinja/nbp_rates/actions/workflows/python-package.yml)
+
 Utility for getting exchange rates from NBP (Polish National Bank)
 
 ## Installation
